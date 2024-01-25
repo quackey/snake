@@ -140,9 +140,10 @@ int drawSnake(int direct, int diff){
     //moving the snake
 
     //delete the one before
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE) , {pos2[points][0], pos2[points][1]});
-    cout << " ";
-
+    if(pos2[points[0]!=0&&pos2[points][1]!=0){
+        SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE) , {pos2[points][0], pos2[points][1]});
+        cout << " ";
+    }
     //cases with the direction, every if is true, when the snake hits the wall, or itself
     //every else moves the snake's first point to the new coordinate,
     //every element of the snake will be replaced with the one next to it
@@ -285,7 +286,7 @@ int main(){
         art();
         intro=FALSE;
     }
-    cout << "Welcome to Quack Snake 1.1 - Pick difficulty (1-3) ";
+    cout << "Welcome to Quack Snake 1.3 - Pick difficulty (1-3) ";
     //if difficulty is not 1-3 it's restarting main
     while(diff<1 || diff>3){
         cin >> diff;
