@@ -25,6 +25,7 @@ bool cont=TRUE,intro=TRUE;
 int main();
 
 int block(){
+    //checking if the snake doesnt cross itself, when it does, it calls losegame by return value
     int i=0;
     for(i=1;i<points;i++){
         if(pos2[0][0]==pos2[i][0] && pos2[0][1]==pos2[i][1]){
@@ -35,17 +36,24 @@ int block(){
 }
 
 int createPoint(){
+    //creating a point
     int i=0;
+
+    //random coordinates on the map
     srand(time(NULL));
     ppos[0]=rand() % 46 + 1;
     ppos[1]=rand() % 22 + 4;
+    //check if the coordinates are not occupied by the snake
     for(i=0;i<points;i++){
         if(pos2[i][0]==ppos[0] && pos2[i][1]==ppos[1]){
             createPoint();
         }
     }
+    /*to see point coordinates
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE) , {54, 0});
-    cout << "P(" << ppos[0]<< ", " << ppos[1] << ")";
+    cout << "P(" << ppos[0]<< ", " << ppos[1] << ")";*/
+
+    //draw the point
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE) , {ppos[0], ppos[1]});
     cout << "@";
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE) , {0, 2});
@@ -53,6 +61,7 @@ int createPoint(){
 }
 
 char drawBoard(){
+    //drawing the map
     int i=0,j=0;
     for(i=0;i<24;i++){
         for(j=0;j<48;j++){
@@ -67,6 +76,7 @@ char drawBoard(){
 }
 
 int checkIfPointScored(){
+    //funct if we cross a point w the snake's head
     if(pos2[0][0]==ppos[0] && pos2[0][1]==ppos[1]){
         createPoint();
         ++points;
@@ -76,6 +86,7 @@ int checkIfPointScored(){
 }
 
 int loseGame(){
+    //funct when we lose
     char c;
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE) , {pos2[0][0], pos2[0][1]});
     cout << "X";
@@ -95,15 +106,19 @@ int loseGame(){
 int snakeGoes(){
     int i;
 
-    //to see the variables
+    /*to see the variables
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE) , {65, 0});
     cout << "S(" << pos2[0][0] << ", " << pos2[0][1] << ") ";
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE) , {76, 0});
-    cout << "d:" << dir;
+    cout << "d:" << dir;*/
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE) , {81, 0});
     cout << "Points: " << points;
+
+    //draw the first element of the snake
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE) , {pos2[0][0], pos2[0][1]});
     cout << "O";
+
+    //draw as many secondary characters 'o' as many points we have
     for(i=1;i<points+1;i++){
         SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE) , {pos2[i][0], pos2[i][1]});
         cout << "o";
@@ -113,6 +128,7 @@ int snakeGoes(){
 }
 
 int rendez(){
+    //changint the snake characters with the next one
     int i;
     for(i=points;i>0;i--){
         pos2[i][0]=pos2[i-1][0];
@@ -121,8 +137,16 @@ int rendez(){
 }
 
 int drawSnake(int direct, int diff){
+    //moving the snake
+
+    //delete the one before
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE) , {pos2[points][0], pos2[points][1]});
     cout << " ";
+
+    //cases with the direction, every if is true, when the snake hits the wall, or itself
+    //every else moves the snake's first point to the new coordinate,
+    //every element of the snake will be replaced with the one next to it
+    //if the snake catches an element it grows
     switch(direct){
         case 1: //up
             {
@@ -132,13 +156,15 @@ int drawSnake(int direct, int diff){
                 break;
             }
             else{
-                rendez();
-                pos2[0][1]--;
-                checkIfPointScored();
-                snakeGoes();
+                rendez(); //replace the snake elements to with the next one
+                pos2[0][1]--; //change the first element of the snake coordinate according to the direction
+                checkIfPointScored(); //check if we scored a point, then we grow
+                snakeGoes(); //drawing the actual snake
             }
             break;
             }
+
+        //it's the same methodology i used with the first
         case 2: //left
         {
             if(pos2[0][0]<2 || block()==1){
@@ -187,6 +213,7 @@ int drawSnake(int direct, int diff){
 }
 
 int board(){
+    //drawing the board with a 2D array
     int i=0,j=0;
     for(j=0;j<48;j++){
         if(j==0){
@@ -226,7 +253,9 @@ int board(){
 }
 
 int art(){
+    //this is the ASCII art appearing only once at execution
     string line;
+    //it reads the "image" from snake_art.txt
     ifstream myfile ("snake_art.txt");
     if (myfile.is_open()){
         while (getline(myfile, line)){
@@ -241,18 +270,23 @@ int art(){
 }
 
 int main(){
+    //clear display
     system(CLEAR);
+    //reset points
     points=0;
+    //reset direction to upwards
     dir=1;
     int diff;
+    //reset init position
     pos2[0][0]=24;
     pos2[0][1]=14;
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE) , {0, 0});
+    //ASCII art is apperaing only once
     if(intro){
         art();
         intro=FALSE;
     }
     cout << "Welcome to Quack Snake 1.1 - Pick difficulty (1-3) ";
+    //if difficulty is not 1-3 it's restarting main
     while(diff<1 || diff>3){
         cin >> diff;
         if(diff<1 || diff > 3){
@@ -261,11 +295,14 @@ int main(){
     }
     cout << endl<<endl;
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE) , {0, 3});
+    //function to draw the board
     board();
     --diff;
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE) , {0, 1});
     getch();
+    //create a point to collect
     createPoint();
+    //controlling the snake, somehow arrows are delayed, while WASD is not
     while(cont){
         if(kbhit()){
             switch(getch()){
@@ -277,13 +314,14 @@ int main(){
                 case 80: if(dir!=1){dir=3;} break;
                 case 75: if(dir!=4){dir=2;} break;
                 case 77: if(dir!=2){dir=4;} break;
-                case 27:
+                case 27: //if ESC then reset
                     pos2[0][0]=24;
                     pos2[0][1]=14;
                     main();
                     break;
             }
         }
+        //moving the snake
         drawSnake(dir,diff);
     }
     return 0;
