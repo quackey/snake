@@ -140,7 +140,7 @@ int drawSnake(int direct, int diff){
     //moving the snake
 
     //delete the one before
-    if(pos2[points[0]!=0&&pos2[points][1]!=0){
+    if(pos2[points][0]!=0&&pos2[points][1]!=0){
         SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE) , {pos2[points][0], pos2[points][1]});
         cout << " ";
     }
